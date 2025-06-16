@@ -20,6 +20,10 @@
   let width = 0;   // 0ならステージ全体
   let height = 0;
 
+  let recordingMediaRecorder = null;
+  let recordingChunks = [];
+  let lastScreenVideoBase64 = "";
+
   function updateVideoStyle() {
     if (!video) return;
     video.style.position = "absolute";
@@ -87,6 +91,21 @@
               WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             }
+          },
+          {
+            opcode: "startScreenRecording",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start screen sharing recording"
+          },
+          {
+            opcode: "stopScreenRecording",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "stop screen sharing recording"
+          },
+          {
+            opcode: "getScreenRecordingBase64",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get screen sharing video as Base64 URL"
           }
         ]
       };
@@ -131,6 +150,35 @@
       width = Number(args.WIDTH);
       height = Number(args.HEIGHT);
       updateVideoStyle();
+    }
+
+    startScreenRecording() {
+      if (!stream) return;
+      if (recordingMediaRecorder && recordingMediaRecorder.state === "recording") return;
+      recordingChunks = [];
+      recordingMediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+      recordingMediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordingChunks.push(e.data);
+      };
+      recordingMediaRecorder.onstop = () => {
+        const blob = new Blob(recordingChunks, { type: "video/webm" });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          lastScreenVideoBase64 = reader.result; // data:video/webm;base64,...
+        };
+        reader.readAsDataURL(blob);
+      };
+      recordingMediaRecorder.start();
+    }
+
+    stopScreenRecording() {
+      if (recordingMediaRecorder && recordingMediaRecorder.state === "recording") {
+        recordingMediaRecorder.stop();
+      }
+    }
+
+    getScreenRecordingBase64() {
+      return lastScreenVideoBase64 || "";
     }
   }
 
