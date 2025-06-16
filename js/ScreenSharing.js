@@ -1,7 +1,7 @@
 // Name: Screen Sharing
 // ID: screenSharing
 // Description: Share your screen and display it over the stage.
-// License: None
+// License: MIT
 
 (function (Scratch) {
   "use strict";

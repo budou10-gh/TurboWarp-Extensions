@@ -1,4 +1,4 @@
-// Notifications extension for TurboWarp / PenguinMod
+// Notifications extension for TurboWarp
 // Copyright (c) 2025 budou10
 // この拡張機能は、元の「Notification」に通知の見出しを追加できるようにしたものです。
 // Edit source : "Notifications" extension | https://extensions.turbowarp.org/mdwalters/notifications.js
