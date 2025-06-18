@@ -14,6 +14,7 @@
     const AS_DATA_URL = "url";
 
     let lastOpenedFileName = ""; // Store the last opened file name
+    let lastOpenedFileContent = ""; // Store the last opened file content
     let lastOpenedFileBase64 = ""; // Store the last opened file as Base64 URL
 
     /**
